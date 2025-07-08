@@ -1,8 +1,8 @@
 import SwiftUI
 
 struct RunView: View {
-    @StateObject var viewModel: RunViewModel
-    @Binding var isPresented: Bool // Binding to control the sheet
+    @ObservedObject var viewModel: RunViewModel
+    let onFinish: () -> Void
     
     @State private var navigateToSummary = false
     
@@ -58,14 +58,9 @@ struct RunView: View {
         }
         .onChange(of: viewModel.isFinished) { finished in
             if finished {
-                navigateToSummary = true
+                onFinish()
             }
         }
-        // Pass the binding to the summary view
-        .navigationDestination(isPresented: $navigateToSummary) {
-            SummaryView(isPresented: $isPresented)
-        }
-        .navigationBarHidden(true)
     }
     
     private var hrZoneBar: some View {
@@ -160,10 +155,8 @@ struct ControlButton: View {
 
 
 fileprivate struct RunView_PreviewWrapper: View {
-    @State private var isPresented = true
-    
     var body: some View {
-        RunView(viewModel: RunViewModel(settings: UserSettings()), isPresented: $isPresented)
+        RunView(viewModel: RunViewModel(settings: UserSettings()), onFinish: {})
     }
 }
 

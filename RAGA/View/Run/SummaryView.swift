@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct SummaryView: View {
-    @Binding var isPresented: Bool // Binding to control the sheet
+    let onDone: () -> Void
     
     let runData = RunData.mock
     @EnvironmentObject var userSettings: UserSettings
@@ -10,38 +10,37 @@ struct SummaryView: View {
         ZStack {
             Color.appGreen.ignoresSafeArea()
             
-            ScrollView {
-                VStack(spacing: 30) {
-                    Text("Great Work!")
-                        .font(.largeTitle)
-                        .fontWeight(.bold)
-                        .foregroundColor(.white)
-                    
-                    Text("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla imperdiet sodales purus. Pellentesque habitant morbi tristique.")
-                        .foregroundColor(.white.opacity(0.8))
-                        .multilineTextAlignment(.center)
-                    
-                    // Illustration Placeholder
-                    Rectangle()
-                        .fill(Color.white.opacity(0.2))
-                        .frame(height: 100)
-                        .cornerRadius(20)
-                        .overlay(Text("Illustration Placeholder").foregroundColor(.white))
-                    
-                    summaryMetrics
-                    
-                    doneButton
-                    
-                    zoneSummary
-                }
-                .padding()
+            VStack(spacing: 16) {
+                Text("Great Work!")
+                    .font(.title2)
+                    .fontWeight(.bold)
+                    .foregroundColor(.white)
+                
+                Text("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla imperdiet sodales purus. Pellentesque habitant morbi tristique.")
+                    .font(.caption)
+                    .foregroundColor(.white.opacity(0.8))
+                    .multilineTextAlignment(.center)
+                
+                // Illustration Placeholder
+                Rectangle()
+                    .fill(Color.white.opacity(0.2))
+                    .frame(height: 60)
+                    .cornerRadius(12)
+                    .overlay(Text("Illustration Placeholder").font(.caption2).foregroundColor(.white))
+                
+                summaryMetrics
+                
+                doneButton
+                
+                zoneSummary
             }
+            .padding()
         }
         .navigationBarHidden(true)
     }
     
     private var summaryMetrics: some View {
-        VStack(spacing: 25) {
+        VStack(spacing: 12) {
             SummaryMetricRow(icon: "clock.fill", title: "TOTAL TIME", value: runData.formattedTotalTime)
             SummaryMetricRow(icon: "figure.run", title: "TOTAL DISTANCE", value: runData.formattedTotalDistance + " KM")
             SummaryMetricRow(icon: "speedometer", title: "AVERAGE PACE", value: runData.formattedAvgPace)
@@ -51,21 +50,21 @@ struct SummaryView: View {
     
     private var doneButton: some View {
         Button(action: {
-            isPresented = false // This will dismiss the entire sheet
+            onDone()
         }) {
             Text("Done")
-                .font(.headline)
+                .font(.subheadline)
                 .fontWeight(.bold)
                 .foregroundColor(.appGreen)
                 .frame(maxWidth: .infinity)
-                .padding()
+                .padding(12)
                 .background(Color.appCream)
-                .cornerRadius(15)
+                .cornerRadius(12)
         }
     }
     
     private var zoneSummary: some View {
-        VStack(alignment: .leading, spacing: 10) {
+        VStack(alignment: .leading, spacing: 6) {
             // Adjusted logic to avoid index out of bounds for the mock data
             let displayableZones = min(runData.timeInZones.count, Color.zoneColors.count)
             ForEach(1..<displayableZones) { index in
@@ -73,21 +72,23 @@ struct SummaryView: View {
                 if timeInMinutes > 0 {
                     HStack {
                         Text("\(index + 1)")
+                            .font(.caption2)
                             .foregroundColor(.white)
-                            .padding(8)
+                            .padding(6)
                             .background(Color.zoneColors[index])
-                            .cornerRadius(5)
+                            .cornerRadius(4)
                         
                         GeometryReader { geo in
                             ZStack(alignment: .leading) {
                                 Rectangle()
                                     .fill(Color.zoneColors[index])
                                     .frame(width: geo.size.width * (timeInMinutes / 40.0))
-                                    .cornerRadius(5)
+                                    .cornerRadius(4)
                             }
                         }
                         
                         Text("\(Int(timeInMinutes)) mins")
+                            .font(.caption2)
                             .foregroundColor(.white)
                     }
                 }
@@ -103,18 +104,18 @@ struct SummaryMetricRow: View {
     let value: String
     
     var body: some View {
-        HStack(spacing: 20) {
+        HStack(spacing: 12) {
             Image(systemName: icon)
-                .font(.title)
+                .font(.title3)
                 .foregroundColor(.white)
-                .frame(width: 40)
+                .frame(width: 30)
             
             VStack(alignment: .leading) {
                 Text(title)
-                    .font(.caption)
+                    .font(.caption2)
                     .foregroundColor(.white.opacity(0.8))
                 Text(value)
-                    .font(.title2)
+                    .font(.headline)
                     .fontWeight(.bold)
                     .foregroundColor(.white)
             }
@@ -126,10 +127,8 @@ struct SummaryMetricRow: View {
 
 
 fileprivate struct SummaryView_PreviewWrapper: View {
-    @State private var isPresented = true
-    
     var body: some View {
-        SummaryView(isPresented: $isPresented)
+        SummaryView(onDone: {})
             .environmentObject(UserSettings())
     }
 }

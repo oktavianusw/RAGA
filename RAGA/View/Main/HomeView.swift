@@ -3,6 +3,9 @@ import SwiftUI
 struct HomeView: View {
     @EnvironmentObject var userSettings: UserSettings
     @State private var isShowingRecordRunSheet = false
+    @State private var isShowingRunView = false
+    @State private var isShowingSummaryView = false
+    @State private var runViewModel: RunViewModel?
 
     var body: some View {
         ZStack {
@@ -90,9 +93,35 @@ struct HomeView: View {
         .sheet(isPresented: $isShowingRecordRunSheet) {
             // The NavigationStack is crucial for navigation *within* the sheet
             NavigationStack {
-                RecordRunView(isPresented: $isShowingRecordRunSheet)
-                    .environmentObject(userSettings)
+                RecordRunView(
+                    isPresented: $isShowingRecordRunSheet,
+                    onStartRun: { viewModel in
+                        runViewModel = viewModel
+                        isShowingRecordRunSheet = false
+                        isShowingRunView = true
+                    }
+                )
+                .environmentObject(userSettings)
             }
+            .presentationDetents([.fraction(0.5)])
+        }
+        .fullScreenCover(isPresented: $isShowingRunView) {
+            RunView(
+                viewModel: runViewModel ?? RunViewModel(settings: userSettings),
+                onFinish: {
+                    isShowingRunView = false
+                    isShowingSummaryView = true
+                }
+            )
+        }
+        .fullScreenCover(isPresented: $isShowingSummaryView) {
+            SummaryView(
+                onDone: {
+                    isShowingSummaryView = false
+                    runViewModel = nil
+                }
+            )
+            .environmentObject(userSettings)
         }
     }
 }
