@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct HRAlertView: View {
+struct PaceAlertView: View {
     @Environment(\.presentationMode) var presentationMode
     var body: some View {
         VStack(spacing: 16) {
@@ -32,6 +32,6 @@ struct HRAlertView: View {
 }
 
 #Preview {
-    HRAlertView()
+    PaceAlertView()
 }
 

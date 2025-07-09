@@ -67,7 +67,7 @@ struct SummaryView: View {
         VStack(alignment: .leading, spacing: 6) {
             // Adjusted logic to avoid index out of bounds for the mock data
             let displayableZones = min(runData.timeInZones.count, Color.zoneColors.count)
-            ForEach(1..<displayableZones) { index in
+            ForEach(Array(1..<displayableZones), id: \.self) { index in
                 let timeInMinutes = runData.timeInZones[index] / 60
                 if timeInMinutes > 0 {
                     HStack {

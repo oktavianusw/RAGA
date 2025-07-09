@@ -56,8 +56,8 @@ struct RunView: View {
         .onAppear {
             viewModel.startRun()
         }
-        .onChange(of: viewModel.isFinished) { finished in
-            if finished {
+        .onChange(of: viewModel.isFinished) { oldValue, newValue in
+            if newValue {
                 onFinish()
             }
         }
