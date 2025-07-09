@@ -6,6 +6,8 @@ struct HomeView: View {
     @State private var isShowingRunView = false
     @State private var isShowingSummaryView = false
     @State private var runViewModel: RunViewModel?
+    @State private var completedRunData: RunData? = nil
+    @StateObject private var sessionsViewModel = SessionsViewModel()
 
     var body: some View {
         ZStack {
@@ -47,7 +49,7 @@ struct HomeView: View {
                 .padding(.horizontal)
                 
                 // Sessions Card
-                NavigationLink(destination: SessionsView()) {
+                NavigationLink(destination: SessionsView(viewModel: sessionsViewModel)) {
                     VStack(alignment: .leading, spacing: 12) {
                         HStack {
                             Text("Sessions")
@@ -111,19 +113,36 @@ struct HomeView: View {
             RunView(
                 viewModel: runViewModel ?? RunViewModel(settings: userSettings),
                 onFinish: {
+                    // Store completed run data
+                    if let vm = runViewModel {
+                        completedRunData = RunData(
+                            date: Date(),
+                            totalDuration: vm.totalDuration,
+                            totalDistance: vm.totalDistance,
+                            averagePace: vm.currentPace,
+                            averageHeartRate: vm.currentHeartRate,
+                            timeInZones: [] // You can fill this with real data if available
+                        )
+                    }
                     isShowingRunView = false
                     isShowingSummaryView = true
                 }
             )
         }
         .fullScreenCover(isPresented: $isShowingSummaryView) {
-            SummaryView(
-                onDone: {
-                    isShowingSummaryView = false
-                    runViewModel = nil
-                }
-            )
-            .environmentObject(userSettings)
+            if let runData = completedRunData {
+                SummaryView(
+                    onDone: {
+                        // Add to sessions
+                        sessionsViewModel.sessions.append(runData)
+                        isShowingSummaryView = false
+                        runViewModel = nil
+                        completedRunData = nil
+                    },
+                    runData: runData
+                )
+                .environmentObject(userSettings)
+            }
         }
     }
 }

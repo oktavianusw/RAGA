@@ -2,8 +2,7 @@ import SwiftUI
 
 struct SummaryView: View {
     let onDone: () -> Void
-    
-    let runData = RunData.mock
+    let runData: RunData
     @EnvironmentObject var userSettings: UserSettings
 
     var body: some View {
@@ -128,7 +127,7 @@ struct SummaryMetricRow: View {
 
 fileprivate struct SummaryView_PreviewWrapper: View {
     var body: some View {
-        SummaryView(onDone: {})
+        SummaryView(onDone: {}, runData: RunData.mock)
             .environmentObject(UserSettings())
     }
 }

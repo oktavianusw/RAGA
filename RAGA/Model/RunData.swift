@@ -9,6 +9,7 @@ import Foundation
 
 // Data for a completed run session
 struct RunData {
+    var date: Date
     var totalDuration: TimeInterval
     var totalDistance: Double // in KM
     var averagePace: Pace
@@ -38,6 +39,7 @@ struct RunData {
     
     static var mock: RunData {
         RunData(
+            date: Date(),
             totalDuration: 5025, // 01:23:45
             totalDistance: 8.40,
             averagePace: Pace(minutes: 7, seconds: 45),

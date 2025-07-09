@@ -2,9 +2,9 @@ import Foundation
 
 class SessionsViewModel: ObservableObject {
     @Published var sessions: [RunData] = [
-        RunData(totalDuration: 3600, totalDistance: 4.31, averagePace: Pace(minutes: 4, seconds: 45), averageHeartRate: 156, timeInZones: [0,0,0,0,0]),
-        RunData(totalDuration: 4200, totalDistance: 5.20, averagePace: Pace(minutes: 5, seconds: 0), averageHeartRate: 165, timeInZones: [0,0,0,0,0]),
-        RunData(totalDuration: 4500, totalDistance: 5.40, averagePace: Pace(minutes: 5, seconds: 10), averageHeartRate: 143, timeInZones: [0,0,0,0,0])
+        RunData(date: Calendar.current.startOfDay(for: Date()), totalDuration: 3600, totalDistance: 4.31, averagePace: Pace(minutes: 4, seconds: 45), averageHeartRate: 156, timeInZones: [0,0,0,0,0]),
+        RunData(date: Calendar.current.date(byAdding: .day, value: -1, to: Calendar.current.startOfDay(for: Date()))!, totalDuration: 4200, totalDistance: 5.20, averagePace: Pace(minutes: 5, seconds: 0), averageHeartRate: 165, timeInZones: [0,0,0,0,0]),
+        RunData(date: Calendar.current.date(byAdding: .day, value: -3, to: Calendar.current.startOfDay(for: Date()))!, totalDuration: 4500, totalDistance: 5.40, averagePace: Pace(minutes: 5, seconds: 10), averageHeartRate: 143, timeInZones: [0,0,0,0,0])
     ]
     
     // MARK: - Aggregated Stats

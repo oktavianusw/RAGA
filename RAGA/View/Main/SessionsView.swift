@@ -1,26 +1,14 @@
 import SwiftUI
 
 struct SessionsView: View {
-    @StateObject private var viewModel = SessionsViewModel()
+    @ObservedObject var viewModel: SessionsViewModel
     
     var body: some View {
         ZStack {
-            Color("Background")
+            Color(hex: "1E2F06")
                 .ignoresSafeArea()
             VStack(alignment: .leading, spacing: 16) {
-                
-                HStack {
-                    Button(action: { /* Navigation back action */ }) {
-                        Image(systemName: "chevron.left")
-                            .foregroundColor(.white)
-                            .font(.title2)
-                    }
-                    Text("Home")
-                        .foregroundColor(.white)
-                        .font(.title3)
-                    Spacer()
-                }
-                .padding(.top, 8)
+
                 
                 
                 
@@ -35,8 +23,8 @@ struct SessionsView: View {
                 VStack(alignment: .leading, spacing: 8) {
                     Text("All Records")
                         .font(.title2).bold()
-                        .foregroundColor(.white)
-                    Divider().background(Color.white.opacity(0.2))
+                        .foregroundColor(Color(hex: "FFFADD"))
+                    Divider().background(Color(hex: "FFFADD").opacity(0.2))
                     HStack {
                         VStack(alignment: .leading, spacing: 4) {
                             Text("TOTAL DISTANCE")
@@ -68,14 +56,16 @@ struct SessionsView: View {
                     }
                 }
                 .padding()
-                .background(Color.white.opacity(0.08))
+                .background(Color(hex: "6A8043").opacity(0.5))
                 .cornerRadius(20)
                 
                 // Session List
                 
                     VStack(spacing: 16) {
                         ForEach(Array(viewModel.sessions.enumerated()), id: \ .offset) { index, session in
-                            SessionCardView(session: session, index: index)
+                            NavigationLink(destination: SessionDetailView(run: session)) {
+                                SessionCardView(session: session, index: index)
+                            }
                         }
                     }
                 }
@@ -91,11 +81,15 @@ struct SessionCardView: View {
     let index: Int
     
     var title: String {
-        switch index {
-        case 0: return "Today"
-        case 1: return "Yesterday"
-        case 2: return "15 Jul"
-        default: return "Session"
+        let calendar = Calendar.current
+        if calendar.isDateInToday(session.date) {
+            return "Today"
+        } else if calendar.isDateInYesterday(session.date) {
+            return "Yesterday"
+        } else {
+            let formatter = DateFormatter()
+            formatter.dateFormat = "d MMM"
+            return formatter.string(from: session.date)
         }
     }
     
@@ -103,14 +97,14 @@ struct SessionCardView: View {
         HStack {
             VStack(alignment: .leading, spacing: 4) {
                 Text(title)
-                    .font(.title3).bold().foregroundColor(.white)
+                    .font(.title3).bold().foregroundColor(Color(hex: "FFFADD"))
                 Text("\(String(format: "%.2f", session.totalDistance).replacingOccurrences(of: ".", with: ",")) KM")
-                    .font(.title3).foregroundColor(.white)
+                    .font(.title3).foregroundColor(Color(hex: "FFFADD"))
                 HStack(spacing: 4) {
                     Text("\(session.averageHeartRate) BPM")
-                        .font(.subheadline).foregroundColor(.white.opacity(0.8))
+                        .font(.subheadline).foregroundColor(Color(hex: "FFFADD").opacity(0.8))
                     Image(systemName: "heart.fill")
-                        .foregroundColor(.white.opacity(0.8))
+                        .foregroundColor(Color(hex: "FFFADD").opacity(0.8))
                         .font(.subheadline)
                 }
             }
@@ -118,10 +112,10 @@ struct SessionCardView: View {
             Image(systemName: "figure.run")
                 .resizable()
                 .frame(width: 40, height: 40)
-                .foregroundColor(Color.orange)
+                .foregroundColor(Color(hex: "FFFADD"))
         }
         .padding()
-        .background(Color.white.opacity(0.08))
+        .background(Color(hex: "6A8043").opacity(0.5))
         .cornerRadius(20)
     }
 }
@@ -129,7 +123,7 @@ struct SessionCardView: View {
 // Preview
 struct SessionsView_Previews: PreviewProvider {
     static var previews: some View {
-        SessionsView()
+        SessionsView(viewModel: SessionsViewModel())
             .preferredColorScheme(.dark)
     }
 } 
