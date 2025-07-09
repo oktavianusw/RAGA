@@ -47,27 +47,29 @@ struct HomeView: View {
                 .padding(.horizontal)
                 
                 // Sessions Card
-                VStack(alignment: .leading, spacing: 12) {
-                    HStack {
-                        Text("Sessions")
-                        Spacer()
-                        Image(systemName: "chevron.right")
+                NavigationLink(destination: SessionsView()) {
+                    VStack(alignment: .leading, spacing: 12) {
+                        HStack {
+                            Text("Sessions")
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                        }
+                        .font(.headline)
+                        
+                        Text("This Week")
+                            .font(.subheadline)
+                            .foregroundColor(.gray)
+                        Text("22,3 KM")
+                            .font(.title)
+                            .fontWeight(.bold)
+                        
+                        BarChartView()
+                        
                     }
-                    .font(.headline)
-                    
-                    Text("This Week")
-                        .font(.subheadline)
-                        .foregroundColor(.gray)
-                    Text("22,3 KM")
-                        .font(.title)
-                        .fontWeight(.bold)
-                    
-                    BarChartView()
-                    
+                    .padding()
+                    .background(Color.appCream)
+                    .cornerRadius(20)
                 }
-                .padding()
-                .background(Color.appCream)
-                .cornerRadius(20)
                 .padding(.horizontal)
                 
                 Spacer()
