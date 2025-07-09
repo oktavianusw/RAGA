@@ -1,6 +1,5 @@
 import SwiftUI
 
-
 struct HRAlertView: View {
     @Environment(\.presentationMode) var presentationMode
     @State private var selectedZone: Int? = 2
@@ -17,97 +16,94 @@ struct HRAlertView: View {
     var body: some View {
         ZStack {
             Color.black.ignoresSafeArea()
-            VStack(spacing: 0) {
-                ScrollView {
+            ScrollView {
+                VStack(spacing: 18) {
                     // Title
                     HStack {
                         Spacer()
                         Text("HR Alert")
                             .font(.system(size: 18, weight: .regular, design: .rounded))
                             .foregroundColor(.white)
+                        
                     }
-                    .padding(.horizontal, 8)
-                    .padding(.top, 8)
+//                    .padding(.top, 16)
 
-                    // Zone selection
+                    // Zones Card
                     VStack(spacing: 0) {
-                        VStack(alignment: .leading, spacing: 0) {
-                            ForEach(paceZones, id: \.0) { zone in
-                                Button(action: { selectedZone = zone.0 }) {
-                                    HStack {
-                                        Text("Zone \(zone.0) | ")
-                                            .font(.system(size: 11, weight: .regular))
-                                            .foregroundColor(.alertText)
-                                        Text(zone.1)
-                                            .font(.system(size: 11, weight: .bold))
-                                            .foregroundColor(.alertText)
-                                        Spacer()
-                                        if selectedZone == zone.0 {
-                                            Image(systemName: "checkmark")
-                                                .foregroundColor(.orange)
-                                        }
-                                    }
-                                    .padding(.vertical, 8)
-                                    .padding(.horizontal, 12)
-                                    .accessibilityElement(children: .combine)
-                                    .accessibilityLabel("Zone \(zone.0), \(zone.1)" + (selectedZone == zone.0 ? ", selected" : ""))
-                                }
-                                .frame(maxWidth: .infinity)
-                                .background(Color.clear)
-                                .overlay(
-                                    Rectangle()
-                                        .frame(height: 1)
-                                        .foregroundColor(.alertDivider),
-                                    alignment: .bottom
-                                )
-                            }
-
-                            Button(action: { selectedZone = nil }) {
+                        ForEach(paceZones, id: \.0) { zone in
+                            Button(action: { selectedZone = zone.0 }) {
                                 HStack {
-                                    Text("Off")
-                                        .font(.system(size: 11, weight: .regular))
-                                        .foregroundColor(.alertText)
+                                    Text("Zone \(zone.0) |")
+                                        .font(.system(size: 13, weight: .regular))
+                                        .foregroundColor(Color(red: 0.29, green: 0.38, blue: 0.22))
+                                    Text(zone.1)
+                                        .font(.system(size: 13, weight: .bold))
+                                        .foregroundColor(Color(red: 0.29, green: 0.38, blue: 0.22))
                                     Spacer()
-                                    if selectedZone == nil {
+                                    if selectedZone == zone.0 {
                                         Image(systemName: "checkmark")
                                             .foregroundColor(.orange)
                                     }
                                 }
                                 .padding(.vertical, 8)
-                                .padding(.horizontal, 12)
-                                .accessibilityElement(children: .combine)
-                                .accessibilityLabel("Off" + (selectedZone == nil ? ", selected" : ""))
+                                .padding(.horizontal, 20)
+                                .background(Color.clear)
                             }
-                            .frame(maxWidth: .infinity)
-                        }
-                    }
-                    .background(Color.paceAlertBackground)
-                    .cornerRadius(16)
-                    .padding(.vertical, 8)
-                    .padding(.horizontal, 16)
-                    .padding(.bottom, 16)
+                            .buttonStyle(.plain)
+                            if zone.0 != paceZones.last?.0 {
+                                Divider()
+                                    .background(Color(.black))
+                                    .frame(maxWidth: .infinity)
 
-                    // Audio Guidance
-                    VStack(alignment: .leading, spacing: 8) {
+                            }
+                        }
+                        // Off Option
+                        Button(action: { selectedZone = nil }) {
+                            HStack {
+                                Text("Off")
+                                    .font(.system(size: 13, weight: .regular))
+                                    .foregroundColor(Color(red: 0.29, green: 0.38, blue: 0.22))
+                                Spacer()
+                                if selectedZone == nil {
+                                    Image(systemName: "checkmark")
+                                        .foregroundColor(.orange)
+                                }
+                            }
+                            .padding(.vertical, 8)
+                            .padding(.horizontal, 20)
+                        }
+                        .buttonStyle(.plain)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .background(Color(red: 1.0, green: 0.98, blue: 0.86))
+                    .cornerRadius(16)
+                    // No horizontal padding: edge-to-edge
+
+                    // Guidance Card
+                    VStack(alignment: .leading, spacing: 10) {
                         Text("Guidance")
                             .font(.system(size: 11, weight: .bold))
                             .foregroundColor(.white)
                         HStack {
                             Text("Audio Guide")
                                 .font(.system(size: 11, weight: .regular))
-                                .foregroundColor(.alertText)
+                                .foregroundColor(Color(red: 0.29, green: 0.38, blue: 0.22))
                             Spacer()
                             Toggle("", isOn: $audioGuideOn)
                                 .labelsHidden()
                         }
                         .padding(.vertical, 8)
-                        .padding(.horizontal, 16)
-                        .background(Color.paceAlertBackground)
+                        .padding(.horizontal, 20)
+                        .background(Color(red: 1.0, green: 0.98, blue: 0.86))
                         .cornerRadius(16)
                     }
-                    .padding(.horizontal, 8)
+                    .frame(maxWidth: .infinity)
+                    // No horizontal padding: edge-to-edge
+                    .padding(.top, 8)
+
+                    Spacer(minLength: 12)
                 }
-                Spacer(minLength: 0)
+                .padding(.bottom, 20)
             }
         }
     }
